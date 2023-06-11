@@ -61,7 +61,7 @@ export default function Login() {
             Login
           </button>
           <Link href="/register">
-            <p>Haven't registered yet? Sign up</p>
+            <p>Haven&apos;t registered yet? Sign up</p>
           </Link>
           {/* <button onClick={(e) => googleAuth(e)}>Google</button> */}
         </form>

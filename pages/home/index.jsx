@@ -70,7 +70,7 @@ export default function Home() {
             <div className={style.listBox}>
               <div className={style.createList}>
                 <h1 className={style.createHead}>
-                  Seems like you haven't created list yet
+                  Seems like you haven&apos;t created list yet
                 </h1>
                 <Link href="/list">
                   <button className={style.button}>Create List</button>
@@ -80,7 +80,9 @@ export default function Home() {
           </div>
         </div>
         <div className={style.login}>
-          <h1 className={style.loginMsg}>Seems like you haven't Login yet!</h1>
+          <h1 className={style.loginMsg}>
+            Seems like you haven&apos;t Login yet!
+          </h1>
           <Link href="/login">
             <button className={style.button}>Login</button>
           </Link>

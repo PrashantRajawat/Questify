@@ -4,7 +4,7 @@ import styles from "@/styles/Home.module.css";
 import Home from "./home"
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+export default function Index() {
   return (
     <>
       <Head>
