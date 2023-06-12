@@ -1,4 +1,3 @@
-import react from "react"
 import { Client, Account, Storage } from "appwrite";
 
 const client = new Client();
@@ -9,5 +8,5 @@ client
 const account = new Account(client);
 const storage = new Storage(client);
 
-export default client;
-export { account, storage };
+
+export { client,account, storage };

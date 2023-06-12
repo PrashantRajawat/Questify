@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { account, storage } from "../config/appwrite";
+import { account, storage } from "../api/appwrite";
 import style from "../../styles/home.module.css";
 import Link from "next/link";
 import Head from "next/head";

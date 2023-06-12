@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { account } from "../config/appwrite";
+import { account } from "../api/appwrite";
 import router from "next/router";
 import style from "../../styles/form.module.css";
 import Link from "next/link";

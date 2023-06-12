@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { account, storage } from "../config/appwrite";
+import { account, storage } from "../api/appwrite";
 import style from "../../styles/list.module.css";
 import Head from "next/head";
 export default function List() {
