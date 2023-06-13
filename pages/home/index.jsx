@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { account, storage } from "../api/appwrite";
 import style from "../../styles/home.module.css";
 import Link from "next/link";
 import Head from "next/head";
+import { AppContext } from "../Context";
+
 export default function Home() {
   const [user, setUser] = useState();
   const [item, setItem] = useState([]);
   const [title, setTitle] = useState();
   const [date, setDate] = useState();
   const [disable, setDisable] = useState(false);
+  const token = useContext(AppContext);
   useEffect(() => {
     const promise = account.get();
     promise.then(
@@ -21,43 +24,7 @@ export default function Home() {
       }
     );
   }, []);
-  const handleUpload = () => {
-    const promise = storage.createFile(
-      "6482bd0bd3ec1d326899",
-      user.$id,
-      document.getElementById("uploader").files[0]
-    );
 
-    promise.then(
-      function (response) {
-        console.log(response); // Success
-      },
-      function (error) {
-        console.log(error); // Failure
-      }
-    );
-  };
-  const handleItem = () => {
-    setItem([...item, { id: "", title: "", desc: "", date: "" }]);
-    console.log(item);
-    setDisable(true);
-  };
-  const handleItemSave = (i, title, date) => {
-    const values = [...item];
-    values[i] = {
-      id: i,
-      title: title,
-      date: date,
-    };
-    setItem(values);
-    setDisable(false);
-  };
-
-  const handleItemDelete = (index) => {
-    const newItems = [...item];
-    newItems.splice(index, 1);
-    setItem(newItems);
-  };
   return (
     <>
       <Head>
@@ -73,19 +40,40 @@ export default function Home() {
                   Seems like you haven&apos;t created list yet
                 </h1>
                 <Link href="/list">
-                  <button className={style.button}>Create List</button>
+                  <button
+                    className={style.button}
+                    disabled={true}
+                    style={{ cursor: "not-allowed" }}
+                  >
+                    Create List
+                  </button>
                 </Link>
               </div>
             </div>
           </div>
         </div>
+        {!token ? (
+          <div className={style.login}>
+            <h1 className={style.loginMsg}>
+              Seems like you haven&apos;t login yet!
+            </h1>
+            <Link href="/login">
+              <button
+                className={style.loginButton}
+                disabled={true}
+                style={{ cursor: "not-allowed" }}
+              >
+                Login
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <></>
+        )}
         <div className={style.login}>
           <h1 className={style.loginMsg}>
-            Seems like you haven&apos;t Login yet!
+            Site currently is under process will be backed soon
           </h1>
-          <Link href="/login">
-            <button className={style.button}>Login</button>
-          </Link>
         </div>
       </div>
     </>

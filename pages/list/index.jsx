@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { account, storage } from "../api/appwrite";
+import { account, storage, databases } from "../api/appwrite";
 import style from "../../styles/list.module.css";
 import Head from "next/head";
 export default function List() {
@@ -20,22 +20,7 @@ export default function List() {
       }
     );
   }, []);
-  const handleUpload = () => {
-    const promise = storage.createFile(
-      "6482bd0bd3ec1d326899",
-      user.$id,
-      document.getElementById("uploader").files[0]
-    );
 
-    promise.then(
-      function (response) {
-        console.log(response); // Success
-      },
-      function (error) {
-        console.log(error); // Failure
-      }
-    );
-  };
   const handleItem = () => {
     setItem([...item, { id: "", title: "", desc: "", date: "" }]);
     console.log(item);
@@ -50,6 +35,7 @@ export default function List() {
     };
     setItem(values);
     setDisable(false);
+    alert("🙌 Item saved");
   };
 
   const handleItemDelete = (index) => {
@@ -57,15 +43,35 @@ export default function List() {
     newItems.splice(index, 1);
     setItem(newItems);
   };
+  const handleSubmit = (index, title, date) => {
+    const promise = databases.createDocument(
+      "6486a86005e7f3fa1048",
+      "6486a873409e1e5825b7",
+      "64816aac3a70d57ce3c2",
+      {
+        id: index,
+        title: title,
+        date: date,
+      }
+    );
+
+    promise.then(
+      function (response) {
+        console.log(response); // Success
+        alert("Successfully added");
+      },
+      function (error) {
+        console.log(error); // Failure
+      }
+    );
+  };
+
   return (
     <>
       <Head>
         <title>Create List</title>
       </Head>
       <div className={style.container}>
-        {/* {user && `Welcome ${user.name}`} */}
-        {/* <input type="file" id="uploader"></input> */}
-        {/* <button onClick={handleUpload}>Upload</button> */}
         <div className={style.upperPart}>
           <div className={style.logoContainer}>
             <h3 className={style.logo}>Questify</h3>
@@ -75,7 +81,8 @@ export default function List() {
                 <button
                   className={style.button}
                   onClick={handleItem}
-                  disabled={disable}
+                  disabled={true}
+                  style={{ cursor: "not-allowed" }}
                 >
                   Add an Item
                 </button>
@@ -103,7 +110,8 @@ export default function List() {
                 />
                 <button
                   className={style.save}
-                  onClick={() => handleItemSave(index, title, date)}
+                  // onClick={() => handleItemSave(index, title, date)}
+                  onClick={() => handleSubmit(index, title, date)}
                 >
                   Save
                 </button>
@@ -116,6 +124,7 @@ export default function List() {
               </div>
             );
           })}
+          {/* <button className={style.button}>Submit</button> */}
         </div>
       </div>
     </>
