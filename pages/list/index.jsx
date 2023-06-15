@@ -2,12 +2,26 @@ import { useEffect, useState } from "react";
 import { account, storage, databases } from "../api/appwrite";
 import style from "../../styles/list.module.css";
 import Head from "next/head";
+import { ID } from "appwrite";
 export default function List() {
   const [user, setUser] = useState();
   const [item, setItem] = useState([]);
-  const [title, setTitle] = useState();
-  const [date, setDate] = useState();
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState("");
+
   const [disable, setDisable] = useState(false);
+  useEffect(() => {
+    const promise = account.get();
+    promise.then(
+      function (response) {
+        setUser(response);
+        console.log(response); // Success
+      },
+      function (error) {
+        console.log(error); // Failure
+      }
+    );
+  }, []);
   useEffect(() => {
     const promise = account.get();
     promise.then(
@@ -22,7 +36,7 @@ export default function List() {
   }, []);
 
   const handleItem = () => {
-    setItem([...item, { id: "", title: "", desc: "", date: "" }]);
+    setItem([...item, { title: "", date: "", userId: "" }]);
     console.log(item);
     setDisable(true);
   };
@@ -43,15 +57,15 @@ export default function List() {
     newItems.splice(index, 1);
     setItem(newItems);
   };
-  const handleSubmit = (index, title, date) => {
+  const handleSubmit = (title, date) => {
     const promise = databases.createDocument(
       "6486a86005e7f3fa1048",
       "6486a873409e1e5825b7",
-      "64816aac3a70d57ce3c2",
+      ID.unique(),
       {
-        id: index,
         title: title,
         date: date,
+        userId: user.$id,
       }
     );
 
@@ -81,10 +95,10 @@ export default function List() {
                 <button
                   className={style.button}
                   onClick={handleItem}
-                  disabled={true}
-                  style={{ cursor: "not-allowed" }}
+                  disabled={false}
+                  style={{ cursor: "pointer" }}
                 >
-                  Add an Item
+                  Add
                 </button>
               </div>
             </div>
@@ -111,7 +125,7 @@ export default function List() {
                 <button
                   className={style.save}
                   // onClick={() => handleItemSave(index, title, date)}
-                  onClick={() => handleSubmit(index, title, date)}
+                  onClick={() => handleSubmit(title, date)}
                 >
                   Save
                 </button>

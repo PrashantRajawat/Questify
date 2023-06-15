@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
-import { account, storage } from "../api/appwrite";
+import { account, databases } from "../api/appwrite";
+import { Query } from "appwrite";
 import style from "../../styles/home.module.css";
 import Link from "next/link";
 import Head from "next/head";
@@ -7,12 +8,10 @@ import { AppContext } from "../Context";
 
 export default function Home() {
   const [user, setUser] = useState();
-  const [item, setItem] = useState([]);
-  const [title, setTitle] = useState();
-  const [date, setDate] = useState();
+  const [dash, setDash] = useState([]);
   const [disable, setDisable] = useState(false);
   const token = useContext(AppContext);
-  useEffect(() => {
+  const userData = () => {
     const promise = account.get();
     promise.then(
       function (response) {
@@ -23,8 +22,30 @@ export default function Home() {
         console.log(error); // Failure
       }
     );
-  }, []);
+  };
+  const dashboard = () => {
+    let dashboard = databases.listDocuments(
+      "6486a86005e7f3fa1048",
+      "6486a873409e1e5825b7",
+      [Query.equal("userId", [user?.$id])]
+    );
 
+    dashboard.then(
+      function (response) {
+        console.log("dashboard", response);
+        setDash(response.documents);
+      },
+      function (error) {
+        console.log(error);
+      }
+    );
+  };
+  useEffect(() => {
+    userData();
+  }, []);
+  useEffect(() => {
+    dashboard();
+  }, [user]);
   return (
     <>
       <Head>
@@ -42,10 +63,10 @@ export default function Home() {
                 <Link href="/list">
                   <button
                     className={style.button}
-                    disabled={true}
-                    style={{ cursor: "not-allowed" }}
+                    disabled={token ? false : true}
+                    style={{ cursor: token ? "pointer" : "not-allowed" }}
                   >
-                    Create List
+                    Create
                   </button>
                 </Link>
               </div>
@@ -60,8 +81,8 @@ export default function Home() {
             <Link href="/login">
               <button
                 className={style.loginButton}
-                disabled={true}
-                style={{ cursor: "not-allowed" }}
+                // disabled={true}
+                style={{ cursor: "pointer" }}
               >
                 Login
               </button>
@@ -70,10 +91,18 @@ export default function Home() {
         ) : (
           <></>
         )}
-        <div className={style.login}>
-          <h1 className={style.loginMsg}>
-            Site currently is under process will be backed soon
-          </h1>
+        <div className={style.dashboard}>
+          <div className={style.dashHead}>Your Quests</div>
+
+          {dash.map((item, index) => {
+            return (
+              <div className={style.quests} key={index}>
+                <p className={style.title}>{item.title} </p>
+                <p className={style.date}>{item.date}</p>
+                <button className={style.buttonAchieved}>Achieved</button>
+              </div>
+            );
+          })}
         </div>
       </div>
     </>
